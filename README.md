@@ -1,0 +1,4 @@
+WEC
+===
+
+WEC Programming Challenge
