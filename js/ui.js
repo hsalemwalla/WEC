@@ -21,15 +21,23 @@ function parseFiles() {
       var mapText = mapReader.result;
       console.log(mapText);
       m_import(mapText);
+      if (requestReader.result != "") {
+        generate();
+      }
     }
     requestReader.onload = function(e) {
       var requestText = requestReader.result;
       console.log(requestText);
       r_import(requestText);
+      if (mapReader.result != "") {
+        generate();
+      }
     }
 
     mapReader.readAsText(mapFile[0]);
     requestReader.readAsText(requestFile[0]);
+
+    
 }
 
 function generate() {
@@ -84,7 +92,7 @@ function generateActions(carRequests) {
                 return BUILDING;
             }
         });
-    };
+    });
     carRequests.forEach(function (request) {
         var x, y;
         x = request.pickup.x;
@@ -95,5 +103,4 @@ function generateActions(carRequests) {
     var Hx;
     var Hy;
     // Start the car on headquarters
-    pathToDest(
 }

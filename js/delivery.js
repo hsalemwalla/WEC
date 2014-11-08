@@ -163,14 +163,14 @@ function pathToDest (x1, y1, x2, y2) {
 }
 
 
-var x = 1;
-var y = 5;
+//var x = 1;
+//var y = 5;
 
-var coord = closestPickup(y, x);
-var x2 = coord['x'];
-var y2 = coord['y'];
+//var coord = closestPickup(y, x);
+//var x2 = coord['x'];
+//var y2 = coord['y'];
 
-console.log(pathToDest(x, y, x2, y2));
+//console.log(pathToDest(x, y, x2, y2));
 
-console.log('Pickup location: ' + x2 + " " + y2);
-console.log(m);
+//console.log('Pickup location: ' + x2 + " " + y2);
+//console.log(m);
