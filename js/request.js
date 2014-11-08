@@ -32,6 +32,8 @@ var r_import = function (input) {
  */
 (window._r_init = function (r) {
 
+	if (!r) r = [];
+
 	// Essentially, define r.byIdMap as {}
 	if (!r.hasOwnProperty('byIdMap')) {
 		Object.defineProperty(r, 'byIdMap', {enumerable: false, value: {}});
@@ -39,13 +41,11 @@ var r_import = function (input) {
 
 	// r.byId(id) returns the request with specific ID, or null if not found
 	if (!r.hasOwnProperty('byId')) {
-
 		Object.defineProperty(r, 'byId', {
 			enumerable: false,
 			value: function (id) {
 				return r.byIdMap[id] || null;
 			},
 		});
-
 	}
 })(r);
