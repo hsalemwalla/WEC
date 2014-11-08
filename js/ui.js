@@ -93,8 +93,11 @@ function beginAlg() {
     var output = combineActions(actions);
     console.log(output);
 
+    var str = JSON.stringify(output);
+    if (profit) alert('Profit: ' + profit(str));
+    if (waitTime) alert('Wait time: ' + waitTime(str));
     $(function () {
-        $('#output').text(JSON.stringify(output));
+        $('#output').text(str);
     });
 }
 
