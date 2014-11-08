@@ -8,15 +8,20 @@ var VISITED  = 'V';
 var PICKUP   = 'P';
 
 // The map itself, which is a 2D array of characters (?).
-var m =    [['X','X','X','X','X','X','X','X'],
-           ['X','X',' ','X','X','X',' ','X'],
-           ['X',' ',' ','P',' ',' ',' ','X'],
-           ['X','X',' ','X','X','X',' ','X'],
-           ['X',' ',' ','X','X','X',' ','X'],
-           ['X','H',' ','X','X','X','P','X'],
-           ['X',' ',' ',' ',' ',' ',' ','X'],
-           ['X','X','X','X','X','X','X','X']];
+var mapArray = [[ 'X','X','X','X','X','X','X','X'],
+               [ 'X','X',' ','X','X','X',' ','X'],
+               [ 'X',' ',' ','P',' ',' ',' ','X'],
+               [ 'X','X',' ','X','X','X',' ','X'],
+               [ 'X',' ',' ','X','X','X',' ','X'],
+               [ 'X','H',' ','X','X','X','P','X'],
+               [ 'X',' ',' ',' ',' ',' ',' ','X'],
+               [ 'X','X','X','X','X','X','X','X']];
 
+function updateMap(tempMap) {
+    for (var i = 0; i < tempMap.length; ++i) {
+        mapArray[i] = tempMap[i].slice(0);
+    }
+}
 
 /**
  * Determines the coordinates of the nearest pickup location to the given x,y coordinates.
