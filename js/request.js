@@ -4,7 +4,7 @@
  */
 var r = [];
 
-/* Parse input string and puts it into r
+/* Parse input string and put array of requests into r
  * Returns r if import successful (input has a .requests property)
  * Returns false otherwise
  */
