@@ -1,64 +1,28 @@
-var MAP_NAME = "map8_1.txt";
-var size;   // Dimension of the map
+var mapText;
+var requestText;
 
+function parseFiles() {
+    //var mapInput = document.getElementById("InputMapFile");
+    var mapFile = document.getElementById("InputMapFile").files;
+    var requestFile = document.getElementById("InputRequestFile").files;
 
-$(document).ready(function() {
-    xmlhttp=new XMLHttpRequest();
-    xmlhttp.open("GET",MAP_NAME,false);
-    xmlhttp.send();
-    xmlDoc=xmlhttp.responseText;
-});
+    //if (!mapFile || !mapFile[0] || !requestFile || !requestFile[0]) {
+        //// Something isn't right
+        //return;
+    //}
+    
+    var mapReader = new FileReader();
+    var requestReader = new FileReader();
 
-function parseMap(data) {
-    var rowText;    // Holds each row
-    console.log(data);
-}
-/*
-function processData(allText) {
-    var allTextLines = allText.split(/\r\n|\n/);
-    var headers = allTextLines[0].split(',');
-    var lines = [];
-
-    for (var i=1; i<allTextLines.length; i++) {
-        var data = allTextLines[i].split(',');
-        if (data.length == headers.length) {
-
-            var tarr = [];
-            for (var j=0; j<headers.length; j++) {
-                tarr.push(headers[j]+":"+data[j]);
-            }
-            lines.push(tarr);
-        }
+    mapReader.onload = function(e) {
+      var mapText = mapReader.result;
+      console.log(mapText);
     }
-    // alert(lines);
+    requestReader.onload = function(e) {
+      var requestText = requestReader.result;
+      console.log(requestText);
+    }
+
+    mapReader.readAsText(mapFile[0]);
+    requestReader.readAsText(requestFile[0]);
 }
-
-
-		string rowText;			// The text contained in each row
-		string[] rowValues;		// Temp array to hold the strings from the row
-		int rowCount;		// Number of rows
-		int colCount;		// Number of columns
-
-		StreamReader sr = new StreamReader(inFileName);
-		rowCount = int.Parse(sr.ReadLine());		
-		colCount = int.Parse(sr.ReadLine());	
-		elevations = new double[ rowCount,colCount ];
-		
-		// rowValues = new double[elevations(1)];
-		
-		// Read File and add to 2D array
-		for(int r = 0;r<elevations.GetLength(0);r++)
-		{
-			// Read the text to a string,
-			// then split text to an array
-			rowText = sr.ReadLine();
-			rowValues = rowText.Split(',');
-			
-			for(int c = 0;c<elevations.GetLength(1);c++)
-			{
-				elevations[r,c] = double.Parse(rowValues[c]);
-			}
-		}
-		
-		sr.Close();
-        */
