@@ -116,10 +116,7 @@ function generateActions(carRequests) {
             }
         });
     });
-<<<<<<< HEAD
-=======
     console.log('map',tempMap);
->>>>>>> 410a77067bd263e39529b13baa7a8bd8858e96e8
     carRequests.forEach(function (request) {
         var x, y;
         x = request.pickup.x;
@@ -127,11 +124,9 @@ function generateActions(carRequests) {
         tempMap[y][x] = PICKUP;
     });
 
-<<<<<<< HEAD
     var Hx;
     var Hy;
     // Start the car on headquarters
-=======
     var x1, y1, x2, y2, tempPoint, path = [];
     var actions = [
         {
@@ -210,7 +205,6 @@ function generateActions(carRequests) {
 
     console.log('final actions for this car',actions.map(astr),actions);
     return actions;
->>>>>>> 410a77067bd263e39529b13baa7a8bd8858e96e8
 }
 
 function combineActions(actions) {
@@ -223,7 +217,3 @@ function combineActions(actions) {
     });
 }
 
-// r_import('{"requests":[{"dropoff":{"y":3,"x":6},"pickup":{"y":6,"x":1},"deliveryFee":16.0,"id":1},{"dropoff":{"y":2,"x":3},"pickup":{"y":3,"x":2},"deliveryFee":4.0,"id":2}],"deliveryHeadquarter":{"y":5,"x":1}}');
-// m_import('XXXXXXXX\r\nXX XXX X\r\nX      X\r\nXX XXX X\r\nX  XXX X\r\nXH XXX X\r\nX      X\r\nXXXXXXXX');
-
-// beginAlg();
