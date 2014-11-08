@@ -8,7 +8,7 @@ var VISITED  = 'V';
 var PICKUP   = 'P';
 
 // The map itself, which is a 2D array of characters (?).
-var mapArray = [[ 'X','X','X','X','X','X','X','X'],
+var m = [[ 'X','X','X','X','X','X','X','X'],
                [ 'X','X',' ','X','X','X',' ','X'],
                [ 'X',' ',' ','P',' ',' ',' ','X'],
                [ 'X','X',' ','X','X','X',' ','X'],
@@ -37,10 +37,10 @@ function closestPickup (row, col) {
 
     // Copy the map because it is going to get modified.
 
-    var map = mapArray;
-    //for (var i = 0; i < m.length; ++i) {
-        //map[i] = m[i].slice(0);
-    //}
+    var map = [];
+    for (var i = 0; i < m.length; ++i) {
+        map[i] = m[i].slice(0);
+    }
 
     while (map[row][col] !== PICKUP) {
 
@@ -82,6 +82,10 @@ function closestPickup (row, col) {
  */
 function pathToDest (x1, y1, x2, y2) {
 
+    var destX = x2;
+    var destY = y2;
+    var xxx;
+
     // A list of points that are potentially part of the path.
     var cells = [{'x' : x2, 'y' : y2, 'c' : 0}];
 
@@ -90,41 +94,46 @@ function pathToDest (x1, y1, x2, y2) {
     // Find the path.
     for (var i = 0; i < cells.length; ++i) {
 
+        //console.log(cells);
         x2 = cells[i]['x'];
         y2 = cells[i]['y'];
         var c = cells[i]['c'] + 1;
 
         // Path found! We're done with this loop.
-        if (x2 === x1 && y2 === y1)
+        if (x2 === x1 && y2 === y1) {
+            xxx = i;
             break;
+        }
 
         if (map[y2 + 1][x2] !== BUILDING) {
-            checkList(x2, y2 + 1, c);
-            cells.push({'x' : x2, 'y' : y2 + 1, 'c' : c});
+            if (checkList(x2, y2 + 1, c))
+                cells.push({'x' : x2, 'y' : y2 + 1, 'c' : c});
         }
         if (map[y2 - 1][x2] !== BUILDING) {
-            checkList(x2, y2 - 1, c);
-            cells.push({'x' : x2, 'y' : y2 - 1, 'c' : c});
+            if (checkList(x2, y2 - 1, c))
+                cells.push({'x' : x2, 'y' : y2 - 1, 'c' : c});
         }
         if (map[y2][x2 + 1] !== BUILDING) {
-            checkList(x2 + 1, y2, c);
-            cells.push({'x' : x2 + 1, 'y' : y2, 'c' : c});
+            if (checkList(x2 + 1, y2, c))
+                cells.push({'x' : x2 + 1, 'y' : y2, 'c' : c});
         }
         if (map[y2][x2 - 1] !== BUILDING) {
-            checkList(x2 - 1, y2, c);
-            cells.push({'x' : x2 - 1, 'y' : y2, 'c' : c});
+            if (checkList(x2 - 1, y2, c))
+                cells.push({'x' : x2 - 1, 'y' : y2, 'c' : c});
         }
     }
 
+    console.log(cells);
+
     // The shortest path. Start with the destination cell.
-    var path = [cells[0]];
-    cells.splice(0, 1);
+    var path = [cells[xxx]];
+    cells.splice(xxx, 1);
 
     // Eliminate cells not used in the final path.
     for (var i = 0; i < path.length; ++i) {
-        var neighbour = getNeighbourWithLowestCount(path[i]['x'], path[i]['y'], x, y);
+        var neighbour = getNeighbourWithLowestCount(path[i]['x'], path[i]['y'], destX, destY);
         path.push(neighbour);
-        if (neighbour['x'] === x && neighbour['y'] === y)
+        if (neighbour['x'] === destX && neighbour['y'] === destY)
             break;
     }
 
@@ -154,23 +163,18 @@ function pathToDest (x1, y1, x2, y2) {
         for (var i = 0; i < cells.length; ++i) {
             if (cells[i]['x'] === x && cells[i]['y'] === y && cells[i]['c'] >= c) {
                 cells.splice(i, 1); // Remove cell with higher count.
-                return;
+                return true;
+            } else if (cells[i]['x'] === x && cells[i]['y'] === y && cells[i]['c'] < c) {
+                return false;
             }
         }
+        return true;
     }
 
     return path.reverse();
 }
 
 
-var x = 1;
-var y = 5;
 
-var coord = closestPickup(y, x);
-var x2 = coord['x'];
-var y2 = coord['y'];
 
-console.log(pathToDest(x, y, x2, y2));
-
-console.log('Pickup location: ' + x2 + " " + y2);
-console.log(m);
+console.log(pathToDest(1, 6, 6, 3));
