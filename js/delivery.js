@@ -37,10 +37,10 @@ function closestPickup (row, col) {
 
     // Copy the map because it is going to get modified.
 
-    var map = [];
-    for (var i = 0; i < m.length; ++i) {
-        map[i] = m[i].slice(0);
-    }
+    var map = mapArray;
+    //for (var i = 0; i < m.length; ++i) {
+        //map[i] = m[i].slice(0);
+    //}
 
     while (map[row][col] !== PICKUP) {
 
