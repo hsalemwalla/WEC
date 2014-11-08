@@ -26,6 +26,27 @@ var r_import = function (input) {
 	return r;
 };
 
+/* Splits r into 'num_chunks' chunks
+ * Returns arrays of arrays of requests, or false if error
+ */
+var r_chunk = function (num_chunks) {
+	if (num_chunks < 1) return false;
+
+	var i, total = r.length;
+	var chunks = new Array(num_chunks);
+	for (i = 0; i < num_chunks; ++i) {
+		chunks[i] = [];
+	}
+
+	var index;
+	for (i = 0; i < total; ++i) {
+		index = i % num_chunks;
+		chunks[index].push(r[i]);
+	}
+
+	return chunks;
+};
+
 
 /* PRIVATE! (DO NOT USE in other files than request.js)
  * Initialize hash map functionality for r.
@@ -49,3 +70,5 @@ var r_import = function (input) {
 		});
 	}
 })(r);
+
+r_import('{"requests":[{"dropoff":{"y":3,"x":6},"pickup":{"y":6,"x":1},"deliveryFee":16.0,"id":1},{"dropoff":{"y":2,"x":3},"pickup":{"y":3,"x":2},"deliveryFee":4.0,"id":2}],"deliveryHeadquarter":{"y":5,"x":1}}');
