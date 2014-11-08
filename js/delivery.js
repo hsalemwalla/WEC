@@ -8,7 +8,7 @@ var VISITED  = 'V';
 var PICKUP   = 'P';
 
 // The map itself, which is a 2D array of characters (?).
-var map = [['X','X','X','X','X','X','X','X'],
+var m =    [['X','X','X','X','X','X','X','X'],
            ['X','X',' ','X','X','X',' ','X'],
            ['X',' ',' ','P',' ',' ',' ','X'],
            ['X','X',' ','X','X','X',' ','X'],
@@ -30,7 +30,12 @@ function closestPickup (row, col) {
 
     var cells = [];
 
-    //console.log(map[row][col]);
+    // Copy the map because it is going to get modified.
+
+    var map = [];
+    for (var i = 0; i < m.length; ++i) {
+        map[i] = m[i].slice(0);
+    }
 
     while (map[row][col] !== PICKUP) {
 
@@ -58,61 +63,84 @@ function closestPickup (row, col) {
     return {'y': row, 'x': col};
 }
 
+
+/**
+ * Determines the shortest path between two points.
+ *
+ * @param  {Number} x1 - First x coord.
+ * @param  {Number} y1 - First y coord.
+ * @param  {Number} x2 - Second x coord.
+ * @param  {Number} y2 - Second y coord.
+ *
+ * @return {Array} Objects with x and y properties. First object is the start point, last object is
+ * the finish point. Intermediate objects define the path in between.
+ */
 function pathToDest (x1, y1, x2, y2) {
+
+    // A list of points that are potentially part of the path.
     var cells = [{'x' : x2, 'y' : y2, 'c' : 0}];
 
+    var map = m;
+
+    // Find the path.
     for (var i = 0; i < cells.length; ++i) {
 
         x2 = cells[i]['x'];
         y2 = cells[i]['y'];
         var c = cells[i]['c'] + 1;
 
-        // Path found! Return cells.
+        // Path found! We're done with this loop.
         if (x2 === x1 && y2 === y1)
-            return cells;
+            break;
 
         if (map[y2 + 1][x2] !== BUILDING) {
-            checkList(x2, y2 + 1, c)
+            checkList(x2, y2 + 1, c);
             cells.push({'x' : x2, 'y' : y2 + 1, 'c' : c});
         }
         if (map[y2 - 1][x2] !== BUILDING) {
-            checkList(x2, y2 - 1, c)
+            checkList(x2, y2 - 1, c);
             cells.push({'x' : x2, 'y' : y2 - 1, 'c' : c});
         }
         if (map[y2][x2 + 1] !== BUILDING) {
-            checkList(x2 + 1, y2, c)
+            checkList(x2 + 1, y2, c);
             cells.push({'x' : x2 + 1, 'y' : y2, 'c' : c});
         }
         if (map[y2][x2 - 1] !== BUILDING) {
-            checkList(x2 - 1, y2, c)
+            checkList(x2 - 1, y2, c);
             cells.push({'x' : x2 - 1, 'y' : y2, 'c' : c});
         }
     }
 
     // The shortest path. Start with the destination cell.
     var path = [cells[0]];
+    cells.splice(0, 1);
 
+    // Eliminate cells not used in the final path.
     for (var i = 0; i < path.length; ++i) {
-        path.push(getNeighbourWithLowestCount(path[i]['x'], path[i]['y']));
-
+        var neighbour = getNeighbourWithLowestCount(path[i]['x'], path[i]['y'], x, y);
+        path.push(neighbour);
+        if (neighbour['x'] === x && neighbour['y'] === y)
+            break;
     }
 
-    function getNeighbourWithLowestCount(x, y) {
+    function getNeighbourWithLowestCount(x, y, xf, yf) {
         var lowestCountNeighbourCellIndex;
         for (var i = 0; i < cells.length; ++i) {
-            if (Math.abs(cells[i]['x'] - x) - Math.abs(cells[i]['y'] - y) === 1) {
+            if (Math.abs(cells[i]['x'] - x) + Math.abs(cells[i]['y'] - y) === 1) {
                 if (!lowestCountNeighbourCellIndex) {
                     lowestCountNeighbourCellIndex = i;
                 } else {
-                    if (cells[i]['c'] < cells[lowestCountNeighbourCellIndex]['c']) {
-                        cells.remove(lowestCountNeighbourCellIndex);
+                    if (cells[i]['x'] === xf && cells[i]['y'] === yf)
+                        return cells[i];
+                    else if (cells[i]['c'] < cells[lowestCountNeighbourCellIndex]['c']) {
+                        cells.splice(lowestCountNeighbourCellIndex, 1);
                         lowestCountNeighbourCellIndex = i;
                     }
                 }
             }
         }
         var lowestCell = cells[lowestCountNeighbourCellIndex];
-        cells.remove(lowestCountNeighbourCellIndex);
+        cells.splice(lowestCountNeighbourCellIndex, 1);
         return lowestCell;
     }
 
@@ -126,7 +154,7 @@ function pathToDest (x1, y1, x2, y2) {
         }
     }
 
-    return path;
+    return path.reverse();
 }
 
 
@@ -140,3 +168,4 @@ var y2 = coord['y'];
 console.log(pathToDest(x, y, x2, y2));
 
 console.log('Pickup location: ' + x2 + " " + y2);
+console.log(m);
