@@ -17,18 +17,23 @@ function parseFiles() {
     var mapReader = new FileReader();
     var requestReader = new FileReader();
 
+    window.loaded = 0;
+
     mapReader.onload = function(e) {
       var mapText = mapReader.result;
-      console.log(mapText);
+      // console.log(mapText);
       m_import(mapText);
+      loaded++;
       if (requestReader.result != "") {
         generate();
       }
     }
+
     requestReader.onload = function(e) {
       var requestText = requestReader.result;
-      console.log(requestText);
+      // console.log(requestText);
       r_import(requestText);
+      loaded++;
       if (mapReader.result != "") {
         generate();
       }
@@ -40,6 +45,8 @@ function parseFiles() {
     
 }
 
+var loaded;
+
 function generate() {
     // Let's get the map array and request and ensure they have been populated
     if (!m || !r) {
@@ -48,7 +55,12 @@ function generate() {
         return;
     }
 
-    beginAlg(m, r);
+    var itvl = setInterval(function () {
+        if (loaded == 2) {
+            beginAlg(m, r);
+            clearInterval(itvl);
+        }
+    }, 100);
 
     // Once the algorithm has run, the output file should be ready
     // We can now simulate the ui
@@ -69,20 +81,28 @@ var PICKUP   = 'P';
 
 function beginAlg() {
     
-    var numCars = cars.length;
+    // var numCars = cars.length;
+    var numCars = 1;
     var pickup = r_chunk(numCars);
-    var actions;
+    var actions = [];
 
-    for (var i = 0; i < cars.length; i++) {
+    for (var i = 0; i < numCars; i++) {
         actions[i] = generateActions(pickup[i]);
     }
 
     var output = combineActions(actions);
+    console.log(output);
+
+    $(function () {
+        $('#output').text(JSON.stringify(output));
+    });
 }
 
 
 
+// Returns an array of actions
 function generateActions(carRequests) {
+
     //var tempMap = m.slice(0);
     var tempMap = m.map(function (row) {
         return row.map(function (cell) {
@@ -93,6 +113,10 @@ function generateActions(carRequests) {
             }
         });
     });
+<<<<<<< HEAD
+=======
+    console.log('map',tempMap);
+>>>>>>> 410a77067bd263e39529b13baa7a8bd8858e96e8
     carRequests.forEach(function (request) {
         var x, y;
         x = request.pickup.x;
@@ -100,7 +124,103 @@ function generateActions(carRequests) {
         tempMap[y][x] = PICKUP;
     });
 
+<<<<<<< HEAD
     var Hx;
     var Hy;
     // Start the car on headquarters
+=======
+    var x1, y1, x2, y2, tempPoint, path = [];
+    var actions = [
+        {
+            action: "start",
+            x: hx,
+            y: hy,
+        },
+    ];
+
+    var pstr = function(a){return a.x+';'+a.y};
+    var astr = function(a){return a.action == 'drive' ? a.action+';'+a.x+';'+a.y : a.action};
+    // First trip: HQ to pickup 1
+    x1 = hx;
+    y1 = hy;
+    x2 = carRequests[0].pickup.x;
+    y2 = carRequests[0].pickup.y;
+    path = pathToDest(x1, y1, x2, y2);
+    console.log('path',path.map(pstr));
+    // path.shift();   // Remove first in path
+    actions = actions.concat(path.map(function (point) {
+        // Given a point, generate action
+        return {
+            action: "drive",
+            x: point.x,
+            y: point.y,
+        };
+    }));
+    actions = actions.concat({action: "pickup", id: carRequests[0].id});
+
+    x1 = carRequests[0].pickup.x;
+    y1 = carRequests[0].pickup.y;
+    x2 = carRequests[0].dropoff.x;
+    y2 = carRequests[0].dropoff.y;
+    path = pathToDest(x1, y1, x2, y2);
+    console.log(x1, y1, x2, y2, 'path',path.map(pstr));
+    actions = actions.concat(path.map(function (point) {
+        return {
+            action: "drive",
+            x: point.x,
+            y: point.y,
+        };
+    }));
+    actions = actions.concat({action: "dropoff", id: carRequests[0].id});
+
+    for (var i = 1; i < carRequests.length; ++i) {
+        // Last dropoff to curr pickup
+        x1 = carRequests[i-1].dropoff.x;
+        y1 = carRequests[i-1].dropoff.y;
+        x2 = carRequests[i].pickup.x;
+        y2 = carRequests[i].pickup.y;
+        path = pathToDest(x1, y1, x2, y2);
+        actions = actions.concat(path.map(function (point) {
+            return {
+                action: "drive",
+                x: point.x,
+                y: point.y,
+            };
+        }));
+        actions = actions.concat({action: "pickup", id: carRequests[i].id});
+
+        // Pickup to dropoff
+        x1 = carRequests[i].pickup.x;
+        y1 = carRequests[i].pickup.y;
+        x2 = carRequests[i].dropoff.x;
+        y2 = carRequests[i].dropoff.y;
+        path = pathToDest(x1, y1, x2, y2);
+        actions = actions.concat(path.map(function (point) {
+            return {
+                action: "drive",
+                x: point.x,
+                y: point.y,
+            };
+        }));
+        actions = actions.concat({action: "dropoff", id: carRequests[i].id});
+    }
+
+    console.log('final actions for this car',actions.map(astr),actions);
+    return actions;
+>>>>>>> 410a77067bd263e39529b13baa7a8bd8858e96e8
 }
+
+function combineActions(actions) {
+    console.log('combineActions', actions);
+    return actions.map(function (raw_arr, i) {
+        return {
+            "carrierId": "car" + i,
+            "actions": raw_arr,
+        };
+    });
+}
+
+// r_import('{"requests":[{"dropoff":{"y":3,"x":6},"pickup":{"y":6,"x":1},"deliveryFee":16.0,"id":1},{"dropoff":{"y":2,"x":3},"pickup":{"y":3,"x":2},"deliveryFee":4.0,"id":2}],"deliveryHeadquarter":{"y":5,"x":1}}');
+// m_import('XXXXXXXX\r\nXX XXX X\r\nX      X\r\nXX XXX X\r\nX  XXX X\r\nXH XXX X\r\nX      X\r\nXXXXXXXX');
+
+// beginAlg();
