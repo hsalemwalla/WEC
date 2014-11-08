@@ -25,6 +25,10 @@ var m_import = function (input) {
 		
 		for (var j = 0; j < size; ++j) {
 			var character = line[j];
+			if (character == 'H') {
+				window.hx = j;
+				window.hy = i;
+			}
 			if (M_INPUT_TRANSFORM[character] !== undefined) {
 				map[i].push(M_INPUT_TRANSFORM[character]);
 			} else {
