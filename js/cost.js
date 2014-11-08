@@ -8,10 +8,11 @@ function revenue(r)
 
 function profit(input)
 {
-    profit = revenue(r) - input.length * 50;
-    for (i = 0; i < input.length; i++) {
-        for (j = 0; j < input[i].actions.length; j++) {
-            if (input[i].actions[j].action == 'drive')
+    var obj = JSON.parse(input);
+    profit = revenue(r) - obj.length * 50;
+    for (i = 0; i < obj.length; i++) {
+        for (j = 0; j < obj[i].actions.length; j++) {
+            if (obj[i].actions[j].action == 'drive')
                 profit--;
         }
         console.log(profit);
@@ -21,9 +22,10 @@ function profit(input)
 
 function waitTime(input)
 {
+    var obj = JSON.parse(input);
     wait_t = 0;
-    for (i = 0; i < input.length; i++) {
-        wait_t += input[i].actions.length - 1;
+    for (i = 0; i < obj.length; i++) {
+        wait_t += obj[i].actions.length - 1;
         console.log(wait_t);
     }
     return wait_t
