@@ -13,7 +13,7 @@ function parseFiles() {
         //alert("You must upload a map and request file");
         //return;
     //}
-    
+
     var mapReader = new FileReader();
     var requestReader = new FileReader();
 
@@ -42,7 +42,7 @@ function parseFiles() {
     mapReader.readAsText(mapFile[0]);
     requestReader.readAsText(requestFile[0]);
 
-    
+
 }
 
 var loaded;
@@ -80,7 +80,7 @@ var PICKUP   = 'P';
 
 
 function beginAlg() {
-    
+
     // var numCars = cars.length;
     var numCars = 1;
     var pickup = r_chunk(numCars);
@@ -94,8 +94,8 @@ function beginAlg() {
     console.log(output);
 
     var str = JSON.stringify(output);
-    if (profit) alert('Profit: ' + profit(str));
-    if (waitTime) alert('Wait time: ' + waitTime(str));
+    //if (profit) alert('Profit: ' + profit(str));
+    //if (waitTime) alert('Wait time: ' + waitTime(str));
     $(function () {
         $('#output').text(str);
     });
